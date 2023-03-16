@@ -1,25 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
+
 import './App.css';
+import { ContactList } from './components/ContactList';
+import { useApi } from './hooks/useApi';
+import { createTheme,Stack, ThemeProvider, Typography } from '@mui/material';
+import CircularStatic from './components/Loading/LoadingSpinner';
 
 function App() {
+const theme = createTheme({
+  palette:{
+    mode: "dark"
+  }
+})
+const {data, loading, error, fetchContact} = useApi()
+
+React.useEffect(() => {
+  fetchContact()
+}, []
+)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Stack direction = {{xs: "column", md: "row"}} mt = {2}flexWrap= {"wrap"} gap={2} justifyContent={"center"} alignItems={"center"}
+      //to write css in mui
+       sx={{
+        textDecoration: "underline"
+      }}
+      >
+        
+        {data?.map((item)=>(
+          <ContactList 
+          key = {item.id}
+          item = {item} />
+        ))}
+        {loading && <CircularStatic/>}
+        {error && <Typography>asdasd</Typography>}
+       
+        
+    </Stack>
+      </ThemeProvider>
   );
 }
 
